@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私はたわし.com</title>
+    
+    <style>
+        /* --- 基本設定 --- */
+        body {
+            background-color: #121212; /* モダンなダーク背景 */
+            color: #e0e0e0;
+            font-family: 'monospace', 'Meiryo', sans-serif; /* モダン ＆ 読みやすさ */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* 画面全体の高さを使う */
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow-x: hidden; /* 横スクロール防止 */
+        }
+
+        /* --- メインコンテンツ --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: auto; /* フッターを下に押しやる */
+        }
+
+        /* タイトル: かっこいいアニメーション */
+        h1 {
+            font-size: 3rem; /* モバイルも考慮 */
+            font-weight: 300; /* 細めでスタイリッシュに */
+            color: #ffffff;
+            letter-spacing: 2px;
+            /* 謎の点滅（グリッチ風）アニメーション */
+            animation: flicker 4s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #0af, /* アクセントカラー */
+                    0 0 40px #0af,
+                    0 0 80px #0af;
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.7;
+            }
+        }
+
+        /* よくわからないメッセージ */
+        p.abstract {
+            font-size: 1rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* --- ミニゲーム --- */
+        #game-section {
+            margin: 40px 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        #tawashi-target {
+            width: 80px;
+            height: 50px;
+            background-color: #8B4513; /* たわし色 (茶色) */
+            border: 4px solid #5A2D0C; /* 濃い茶色の枠 */
+            border-radius: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+            user-select: none; /* テキスト選択を無効化 */
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            
+            /* たわしの質感（文字で表現）*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #D2B48C; /* たんぽぽ色 */
+            font-size: 0.7rem;
+            font-weight: bold;
+            overflow: hidden; /* はみ出し防止 */
+        }
+
+        /* クリック時のエフェクト */
+        #tawashi-target:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #FFD700; /* クリック時に光る */
+        }
+
+        #score-display {
+            font-size: 1.2rem;
+            color: #0af; /* アクセントカラー */
+            font-weight: bold;
+        }
+
+        /* --- フッター --- */
+        footer {
+            margin-top: auto; /* 常に一番下に配置 */
+            padding-top: 30px;
+            width: 100%;
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        /* 所有者リンク */
+        footer a {
+            color: #0af; /* アクセントカラー */
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        footer a:hover {
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+        }
+
+        /* --- レスポンシブ対応 --- */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            p.abstract {
+                font-size: 0.9rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>私はたわし.com</h1>
+        <p class="abstract">
+            存在とは、擦る（こする）こと。
+            <br>
+            ここは、始まりの場所。
+        </p>
+
+        <div id="game-section">
+            <h2>たわしクリッカー</h2>
+            <p>押せ。</p>
+            
+            <div id="tawashi-target" aria-label="たわしをクリック">
+                ( :||||: )
+            </div>
+            
+            <div id="score-display">
+                磨き: <span id="score">0</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>所有者: <a href="http://9ramme.net" target="_blank" rel="noopener noreferrer">9ramme.net</a></p>
+        <p>&copy; 2025 私はたわし.com</p>
+    </footer>
+
+    <script>
+        // 厳格モード（推奨）
+        'use strict';
+
+        // 1. 必要な要素を取得
+        const tawashi = document.getElementById('tawashi-target');
+        const scoreDisplay = document.getElementById('score');
+
+        // 2. スコア変数を初期化
+        let score = 0;
+
+        // 3. 「たわし」がクリックされたときの処理
+        tawashi.addEventListener('click', function() {
+            
+            // 4. スコアを1増やす
+            score++;
+            
+            // 5. スコアを画面に反映
+            scoreDisplay.textContent = score;
+
+            // (おまけ) クリック時にちょっとしたフィードバック
+            tawashi.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                tawashi.style.transform = 'scale(1)';
+            }, 100); // 0.1秒後に元に戻す
+        });
+
+    </script>
+
+</body>
+</html>
